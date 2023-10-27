@@ -1,0 +1,134 @@
+[package]
+edition = "2021"
+name = "embassy-pico-template"
+authors = ["Lechev.space <dev@lechev.space>", "Lachezar Lechev"]
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+
+
+[profile.release]
+
+# TODO: You might want to tweak these parameters for your project needs!
+
+# Optimization settings w/out debug symbols
+opt-level = 3
+strip = false
+debug = false
+# With debug symbols
+# debug = 2
+codegen-units = 1
+lto = true
+
+[features]
+
+# when disabling the `defmt` feature you must make sure your code 
+default = ["std"]
+firmware = ["cortex-m", "rp2040", "defmt"]
+
+defmt = [
+    "dep:defmt",
+    "dep:defmt-rtt",
+    # "heapless/defmt-impl",
+    "panic-probe/print-defmt",
+    "embassy-sync/defmt",
+    "embassy-executor/defmt",
+    "embassy-time/defmt",
+    "embassy-embedded-hal/defmt",
+    "embassy-time/defmt-timestamp-uptime",
+    "embassy-rp/defmt",
+    "embassy-usb/defmt",
+    "embassy-net/defmt",
+    # "embassy-net-wiznet/defmt",
+    "embedded-hal-async/defmt-03",
+    "embedded-io/defmt-03",
+    "embedded-io-async/defmt-03",
+]
+
+
+std = [
+    "alloc",
+    "embassy-executor/arch-std",
+    "embassy-time/std",
+    "embassy-sync/std",
+    "embassy-embedded-hal/std",
+
+    "embedded-io/std",
+    "embedded-io-async/std",
+    
+    "critical-section/std",
+    "portable-atomic/std",
+]
+alloc = []
+
+cortex-m = ["dep:cortex-m", "dep:cortex-m-rt"]
+rp2040 = [
+    "embassy-rp/critical-section-impl",
+    "embassy-rp/rt",
+    "embassy-rp/time-driver",
+    "embassy-executor/arch-cortex-m",
+    "portable-atomic/critical-section",
+]
+
+[dependencies]
+embassy-sync = { version = "0.3.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682" }
+embassy-executor = { version = "0.3", features = ["integrated-timers", "executor-thread", "nightly"] }
+embassy-time = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682", features = [
+    "nightly",
+    "unstable-traits",
+] }
+embassy-rp = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682", features = [
+    "unstable-traits",
+    "nightly",
+    "unstable-pac",
+    "time-driver",
+] }
+# `usbd-hid` feature is enabled by default
+embassy-usb = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682", default-features = false }
+embassy-net = { version = "0.2.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682", features = [
+    "nightly",
+    "udp",
+    "tcp",
+    "dhcpv4",
+    "medium-ethernet",
+] }
+embassy-embedded-hal = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682" }
+embassy-futures = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682" }
+embassy-usb-logger = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "b6fc682" }
+
+# TODO: If you're using a RP Pico board with a W5500 or W5100 chip
+# embassy-net-wiznet = { version = "0.1.0", git = "https://github.com/embassy-rs/embassy", rev = "52e269e" }
+
+cortex-m = { version = "0.7", optional = true }
+# Require 0.7.3 because of <https://github.com/rust-embedded/cortex-m/discussions/469>
+cortex-m-rt = { version = "0.7.3", optional = true }
+
+panic-probe = "0.3"
+
+futures = { version = "0.3.17", default-features = false, features = [
+    "async-await",
+    "cfg-target-has-atomic",
+    "unstable",
+] }
+
+embedded-hal-1 = { package = "embedded-hal", version = "=1.0.0-rc.1" }
+embedded-hal-async = "1.0.0-rc.1"
+embedded-io = { version = "0.6" }
+embedded-io-async = "0.6.0"
+embedded-storage = "0.3"
+
+static_cell = { version = "1.2", features = ["nightly"] }
+
+# Atomic support
+portable-atomic = { version = "1", default-features = false, features = ["require-cas"] }
+
+# Logging
+defmt = { version = "0.3", optional = true }
+defmt-rtt = { version = "0.4", optional = true }
+
+log = { version = "0.4", optional = true }
+
+critical-section = "1.1"
+
+[dev-dependencies]
+# TODO: You can use `tokio` for running async tests using the `test` macro.
+# tokio = { version = "1", default-features = false, features = ["rt", "macros"] }
