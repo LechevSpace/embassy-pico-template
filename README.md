@@ -1,4 +1,4 @@
-# RP Pico Embassy template
+# Embassy RP Pico template
 
 ## Setup
 
